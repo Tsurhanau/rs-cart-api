@@ -7,7 +7,9 @@ import { CartService } from './services';
 
 
 @Module({
-  imports: [ OrderModule ],
+  imports: [ 
+    OrderModule,
+  ],
   providers: [ CartService ],
   controllers: [ CartController ]
 })
