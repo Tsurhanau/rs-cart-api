@@ -1,4 +1,4 @@
-import { Controller, Get, Delete, Put, Body, Req, Post, UseGuards, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Delete, Put, Body, Req, Post, UseGuards, HttpStatus, Param } from '@nestjs/common';
 
 // import { BasicAuthGuard, JwtAuthGuard } from '../auth';
 import { OrderService } from '../order';
@@ -14,16 +14,21 @@ export class CartController {
     private orderService: OrderService
   ) { }
 
-  // @UseGuards(JwtAuthGuard)
-  // @UseGuards(BasicAuthGuard)
   @Get()
-  findUserCart(@Req() req: AppRequest) {
-    const cart = this.cartService.findOrCreateByUserId(getUserIdFromRequest(req));
-
-    return {
-      statusCode: HttpStatus.OK,
-      message: 'OK',
-      data: { cart, total: calculateCartTotal(cart) },
+  async getCarts(): Promise<any> {
+    try {
+      const carts = await this.cartService.getCarts();
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'OK',
+        data: { carts },
+      };
+    } catch (error) {
+      return {
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: 'An error occurred while fetching carts.',
+        error: error.message,
+      };
     }
   }
 
@@ -45,13 +50,21 @@ export class CartController {
 
   // @UseGuards(JwtAuthGuard)
   // @UseGuards(BasicAuthGuard)
-  @Delete()
-  clearUserCart(@Req() req: AppRequest) {
-    this.cartService.removeByUserId(getUserIdFromRequest(req));
+  @Delete(':productId')
+  async clearUserCart(@Param('productId') productId: string) {
+    try {
+      this.cartService.removeByUserId(productId);
 
-    return {
-      statusCode: HttpStatus.OK,
-      message: 'OK',
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'OK',
+      };
+    } catch (error) {
+      return {
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: 'An error occurred while clearing user cart.',
+        error: error.message,
+      };
     }
   }
 

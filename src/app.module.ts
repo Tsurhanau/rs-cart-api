@@ -10,7 +10,7 @@ import { OrderModule } from './order/order.module';
   imports: [
     AuthModule,
     CartModule,
-    OrderModule,
+    OrderModule
   ],
   controllers: [
     AppController,

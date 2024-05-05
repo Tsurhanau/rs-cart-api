@@ -1,0 +1,23 @@
+service: serverless-nestjs-example
+
+plugins:
+  - serverless-dotenv-plugin
+  - serverless-offline
+
+useDotenv: true
+
+provider:
+  name: aws
+  region: eu-north-1
+  runtime: nodejs18.x
+  stage: dev
+functions:
+  main:
+    handler: dist/main.handler
+    events:
+      - http:
+          method: ANY
+          path: /
+      - http:
+          method: ANY
+          path: '{proxy+}'
